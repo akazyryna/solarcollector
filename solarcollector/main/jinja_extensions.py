@@ -1,0 +1,2 @@
+def aaa():
+    return 'asddasd!@#!@#!@#'

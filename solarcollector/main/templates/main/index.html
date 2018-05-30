@@ -1,0 +1,22 @@
+{% include "main/forms/filter.html" %}
+
+{% if properties and city_properties %}
+    <table>
+        <thead>
+            <th>
+                #
+            </th>
+            <th>
+                SUPER PUPER
+            </th>
+        </thead>
+        <tbody>
+            {% for month in months %}
+                <tr>
+                    <td>{{ index }}</td>
+                    <td>{{ aaa }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
