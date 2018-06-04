@@ -34,8 +34,8 @@ class MainCitiesMonthsReport(BaseReport):
         for_horizontal = formulas.formula_for_horizontal(cities_props['lat'].value, props['horz_angle'].value)
         for_inclination = formulas.formula_for_inclination(cities_props['lat'].value, props['horz_angle'].value,
                                                            self.incn_angle)
-        min = formulas.formula_min(for_horizontal, for_inclination)
-        conversion_factor = formulas.formula_conversion_factor(cities_props['lat'].value, self.incn_angle, min,
+        for_min = formulas.formula_min(for_horizontal, for_inclination)
+        conversion_factor = formulas.formula_conversion_factor(cities_props['lat'].value, self.incn_angle, for_min,
                                                                props['horz_angle'].value, for_horizontal)
         convers = formulas.formula_convers(self.incn_angle, props['ed'].value, props['e'].value, conversion_factor,
                                          cities_props['ro'].value)
@@ -44,7 +44,7 @@ class MainCitiesMonthsReport(BaseReport):
         try:
             return [
                 for_horizontal,
-                min,
+                for_min,
                 conversion_factor,
                 convers,
                 amount_energy
