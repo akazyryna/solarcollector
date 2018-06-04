@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views import View
 
-from . import models, formulas
+from . import reports, constants
 from .forms import FilterForm
 
 
@@ -10,22 +10,22 @@ class IndexView(View):
         return render(request, template_name='main/index.html',
                       context={'filter_form': FilterForm()})
 
+
+class FilterView(View):
     def post(self, request):
         filter_form = FilterForm(request.POST)
 
-        if not filter_form.is_valid():
-            return render(request, template_name='main/index.html',
-                          context={'filter_form': filter_form})
+        context = {
+            'filter_form': filter_form}
 
+        if filter_form.is_valid():
+            incn_angle = filter_form.cleaned_data['incn_angle']
+            month_from = int(filter_form.cleaned_data['month_from'])
+            month_to = int(filter_form.cleaned_data['month_to'])
+            months = range(month_from, month_to + 1) if month_to else [month_from]
+            report = reports.MainCitiesMonthsReport([filter_form.cleaned_data['city']], months, incn_angle)
 
-        props = models.Property.objects.filter(city__id = filter_form.cleaned_data['city'],
-                                                    month__in=[filter_form.cleaned_data['month_from'],
-                                                               filter_form.cleaned_data['month_to']])
+            context.update({'report': report,
+                            'MONTHS': dict(constants.MONTHS)})
 
-        city_props = models.CityProperty.objects.filter(city__id = filter_form.cleaned_data['city'])
-
-        return render(request, template_name='main/index.html',
-                      context={'filter_form': filter_form,
-                               'properties': props, 'city_properties': city_props,
-                               'months': [filter_form.cleaned_data['month_from'],
-                                          filter_form.cleaned_data['month_to']]})
+        return render(request, template_name='main/index.html', context=context)

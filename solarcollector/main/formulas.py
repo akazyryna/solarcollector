@@ -5,7 +5,7 @@ def formula_for_horizontal(lat, horz_angle):
     return m.degrees(m.acos(-m.tan(m.radians(lat)) * m.tan(m.radians(horz_angle))))
 
 
-def formula_for_inclination(lat, incn_angle, horz_angle):
+def formula_for_inclination(lat, horz_angle, incn_angle):
     return m.degrees(m.acos(-m.tan(m.radians(lat - incn_angle)) * m.tan(m.radians(horz_angle))))
 
 

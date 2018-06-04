@@ -1,22 +1,36 @@
-{% include "main/forms/filter.html" %}
+{% extends "base.html" %}
+{% load filters %}
 
-{% if properties and city_properties %}
-    <table>
-        <thead>
-            <th>
-                #
-            </th>
-            <th>
-                SUPER PUPER
-            </th>
-        </thead>
-        <tbody>
-            {% for month in months %}
-                <tr>
-                    <td>{{ index }}</td>
-                    <td>{{ aaa }}</td>
-                </tr>
+{% block content %}
+    <div class="container">
+        {% block filter %}
+            {% include "main/forms/filter.html" %}
+        {% endblock %}
+
+        {% if report.report_values %}
+            {% for city_report in report.report_values %}
+                <h2 >{{ city_report.city.name }}</h2>
+                <table class="table table-hover table-striped">
+                    <thead class="thead-light">
+                        <th scope="col">Month</th>
+                        <th scope="col">&omega;<sub>3</sub></th>
+                        <th scope="col">&omega;'<sub>3</sub></th>
+                        <th scope="col">R<sub>p</sub></th>
+                        <th scope="col">R</th>
+                        <th scope="col">E<sub>k</sub></th>
+                    </thead>
+                    <tbody class="">
+                        {% for month_num, month_report in city_report.months_report.items %}
+                            <tr>
+                                <td>{{ MONTHS|lookup:month_num}}</td>
+                                {% for mesuarement in month_report %}
+                                    <td>{{ mesuarement|floatformat:"-2" }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
-from .views import IndexView
+from . import views
 
 urlpatterns = (
-    url(r'', IndexView.as_view(), name='main_index'),
+    url(r'filter/', views.FilterView.as_view(), name='main_filter'),
+    url(r'', views.IndexView.as_view(), name='main_index'),
 )

@@ -6,6 +6,22 @@ class CitiesManager(models.Manager):
         return tuple((city.id, city.name) for city in self.all().iterator())
 
 
+class BasePropertiesManager(models.Manager):
+    def as_dict(self, **kwargs):
+        qs = self.filter(**kwargs)
+        print(qs)
+
+        return {prop.slug: prop for prop in qs}
+
+
+class PropertiesManager(BasePropertiesManager):
+    pass
+
+
+class CityPropertiesManager(BasePropertiesManager):
+    pass
+
+
 class City(models.Model):
     name = models.CharField(max_length=20)
 
@@ -19,6 +35,8 @@ class CityProperty(models.Model):
     value = models.FloatField()
     type = models.IntegerField(blank=True, null=True)
 
+    objects = CityPropertiesManager()
+
 
 class Property(models.Model):
     name = models.CharField(max_length=100)
@@ -27,3 +45,5 @@ class Property(models.Model):
     value = models.FloatField()
     month = models.IntegerField()
     type = models.IntegerField(blank=True, null=True)
+
+    objects = PropertiesManager()
