@@ -9,7 +9,6 @@ class CitiesManager(models.Manager):
 class BasePropertiesManager(models.Manager):
     def as_dict(self, **kwargs):
         qs = self.filter(**kwargs)
-        print(qs)
 
         return {prop.slug: prop for prop in qs}
 
