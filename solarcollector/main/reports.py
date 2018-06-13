@@ -30,7 +30,6 @@ class MainCitiesMonthsReport(BaseReport):
     def _city_properties_per_month(self, city_id, month):
         props = models.Property.objects.as_dict(city__id=city_id, month=month)
         cities_props = models.CityProperty.objects.as_dict(city__id=city_id)
-        self.incn_angle = self.incn_angle
         for_horizontal = formulas.formula_for_horizontal(cities_props['lat'].value, props['horz_angle'].value)
         for_inclination = formulas.formula_for_inclination(cities_props['lat'].value, props['horz_angle'].value,
                                                            self.incn_angle)
