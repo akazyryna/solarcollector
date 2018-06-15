@@ -87,15 +87,15 @@ def formula_thermal_cond_water(hot_temp, cold_temp):
 
 # коэффициент кинематической вязкости воды
 def formula_kinematic_viscosity_water(hot_temp, cold_temp):
-    return m.exp(m.exp(33.23 - 5.93043 * m.log(((hot_temp + cold_temp) / 2) + 273)) - 0.87)
+    return m.exp(m.exp(33.23 - 5.93043 * m.log(((hot_temp + cold_temp) / 2) + 273)) - 0.87) * 10 ** -6
 
 
 # число Прандтля для воды
 def formula_prandtl_water(formula_kinematic_viscosity_water, heat_cap, formula_density_water,
                           formula_thermal_cond_water):
-    return ((
-                formula_kinematic_viscosity_water) * 10 ** -6 * (
-                heat_cap) * formula_density_water) / formula_thermal_cond_water
+    return (
+                   formula_kinematic_viscosity_water * (
+               heat_cap) * formula_density_water) / formula_thermal_cond_water
 
 
 # эквивалентный диаметр
@@ -105,8 +105,7 @@ def formula_equivalent_diameter(channel_height):
 
 # число Рейнольдса
 def formula_reynolds_num(formula_equivalent_diameter, formula_heat_carrier_speed, formula_kinematic_viscosity_water):
-    return (formula_equivalent_diameter * formula_heat_carrier_speed) / (
-        formula_kinematic_viscosity_water) * 10 ** -6
+    return (formula_equivalent_diameter * (formula_heat_carrier_speed) * 10 ** -5) / formula_kinematic_viscosity_water
 
 
 # коэффициент теплоотдачи от поглощающей панели к теплоносителю для ламинарного режима
@@ -124,6 +123,36 @@ def formula_heat_trans(plate_thickness, thermal_cond_plate, formula_coef_heat_tr
 # температура поглощающей панели
 def formula_temp_plate(hot_temp, cold_temp, formula_net_power_sc, formula_heat_trans):
     return ((hot_temp + cold_temp) / 2) + (formula_net_power_sc / formula_heat_trans)
+
+
+# плотность для пластины
+def formula_density_plate(formula_temp_plate):
+    return 1005 / (0.99534 + 0.466 * 10 ** -3 * (formula_temp_plate) / 2)
+
+
+# коэффициент теплопроводности пластины
+def formula_thermal_cond_plate(formula_temp_plate):
+    return 0.5514 + (0.2588 * 10 ** -2) * ((formula_temp_plate) / 2) - (0.1278 * 10 ** -4) * (
+            (formula_temp_plate) / 2) ** 2
+
+
+# коэффициент кинематической вязкости пластины
+def formula_kinematic_viscosity_plate(formula_temp_plate):
+    return m.exp(m.exp(33.23 - 5.93043 * m.log(((formula_temp_plate) / 2) + 273)) - 0.87) * 10 ** -6
+
+
+# число Прандтля для пластины
+def formula_prandtl_plate(formula_kinematic_viscosity_plate, heat_cap, formula_density_plate,
+                          formula_thermal_cond_plate):
+    return (
+                   formula_kinematic_viscosity_plate * (
+               heat_cap) * formula_density_plate) / formula_thermal_cond_plate
+
+# коэффициент теплоотдачи от поглощающей панели к теплоносителю для ламинарного режима (пластина)
+def formula_coef_heat_transfer_plate(formula_thermal_cond_water, formula_equivalent_diameter, formula_reynolds_num,
+                               formula_prandtl_water, formula_prandtl_plate):
+    return (formula_thermal_cond_water / formula_equivalent_diameter) * (0.15 * (formula_reynolds_num) ** 0.33) * (
+            (formula_prandtl_water) ** 0.43) * (formula_prandtl_water / formula_prandtl_plate) ** 0.25
 
 
 # коэффициент теплопроводности среды
