@@ -148,9 +148,10 @@ def formula_prandtl_plate(formula_kinematic_viscosity_plate, heat_cap, formula_d
                    formula_kinematic_viscosity_plate * (
                heat_cap) * formula_density_plate) / formula_thermal_cond_plate
 
+
 # коэффициент теплоотдачи от поглощающей панели к теплоносителю для ламинарного режима (пластина)
 def formula_coef_heat_transfer_plate(formula_thermal_cond_water, formula_equivalent_diameter, formula_reynolds_num,
-                               formula_prandtl_water, formula_prandtl_plate):
+                                     formula_prandtl_water, formula_prandtl_plate):
     return (formula_thermal_cond_water / formula_equivalent_diameter) * (0.15 * (formula_reynolds_num) ** 0.33) * (
             (formula_prandtl_water) ** 0.43) * (formula_prandtl_water / formula_prandtl_plate) ** 0.25
 
@@ -167,8 +168,8 @@ def formula_kinematic_viscosity_env(formula_temp_plate, temp_glass):
 
 # число Грасгофа
 def formula_grashof(formula_temp_plate, temp_glass, g, channel_height, formula_kinematic_viscosity_env):
-    return (1 / (273 + (formula_temp_plate + temp_glass) / 2) * g * (formula_temp_plate - temp_glass) * (
-        channel_height) ** 3) / (formula_kinematic_viscosity_env) ** 2
+    return 1 / (273 + ((formula_temp_plate + temp_glass) / 2)) * g * (formula_temp_plate - temp_glass) * (
+            (channel_height) ** 3) / ((formula_kinematic_viscosity_env) ** 2)
 
 
 # коэффициент конвективного теплообмена
@@ -207,11 +208,66 @@ def formula_temp_glass(temp_air, formula_temp_plate, formula_loss_factor, formul
             formula_loss_factor / (formula_free_convection + formula_radiation_transfer))
 
 
+# коэффициент теплопроводности среды (с действительной температурой стекла)
+def formula_thermal_cond_gl(formula_temp_plate, formula_temp_glass):
+    return (2.43 + 0.008 * (formula_temp_plate + formula_temp_glass) / 2) * 10 ** -2
+
+
+# коэффициент кинематической вязкости среды
+def formula_kinematic_viscosity_env_gl(formula_temp_plate, formula_temp_glass):
+    return (13.28 + 0.09 * (formula_temp_plate + formula_temp_glass) / 2) * 10 ** -6
+
+
+# число Грасгофа
+def formula_grashof_gl(formula_temp_plate, formula_temp_glass, g, channel_height, formula_kinematic_viscosity_env_gl):
+    return 1 / (273 + ((formula_temp_plate + formula_temp_glass) / 2)) * g * (
+            formula_temp_plate - formula_temp_glass) * (
+                   (channel_height) ** 3) / ((formula_kinematic_viscosity_env_gl) ** 2)
+
+
+# коэффициент конвективного теплообмена
+def formula_convect_transfer_gl(formula_thermal_cond_gl, channel_height, incn_angle, formula_grashof_gl):
+    return (formula_thermal_cond_gl / channel_height) * (0.060 - 0.00019 * incn_angle) * (
+        formula_grashof_gl) ** 0.333
+
+
+# радиационный коэффициент
+def formula_radiation_coef_gl(boltzman, formula_temp_plate, formula_temp_glass, blackness_plate, blackness_glass):
+    return (boltzman / (
+            (formula_temp_plate - formula_temp_glass) * ((1 / blackness_plate) + (1 / blackness_glass) - 1))) * (
+                   (((formula_temp_plate + 273) / 100) ** 4) - (((formula_temp_glass + 273) / 100) ** 4))
+
+
+# коэффициент теплоотдачи для свободной конвекции
+def formula_free_convection_gl(incn_angle, formula_temp_glass, temp_air):
+    return (2.26 - 0.0067 * incn_angle) * (formula_temp_glass - temp_air) ** 0.33
+
+
+# радиационный коэффициент теплопередачи
+def formula_radiation_transfer_gl(boltzman, blackness_glass, formula_temp_glass, temp_air):
+    return (boltzman * blackness_glass / (formula_temp_glass - temp_air)) * (
+            (((formula_temp_glass + 273) / 100) ** 4) - (((temp_air + 273) / 100) ** 4))
+
+
+# коэффициент потерь
+def formula_loss_factor_gl(formula_convect_transfer_gl, formula_radiation_coef_gl, width_surface, cond_surface,
+                           formula_free_convection_gl, formula_radiation_transfer_gl):
+    return ((1 / (formula_convect_transfer_gl + formula_radiation_coef_gl)) + (width_surface / cond_surface) + (
+            1 / (formula_free_convection_gl + formula_radiation_transfer_gl))) ** -1
+
+
+# действительную температуру остекления
+def formula_temp_gl(temp_air, formula_temp_plate, formula_loss_factor_gl, formula_free_convection_gl,
+                    formula_radiation_transfer_gl):
+    return temp_air + (formula_temp_plate - temp_air) * (
+            formula_loss_factor_gl / (formula_free_convection_gl + formula_radiation_transfer_gl))
+
+
 # коэффициент эффективности
-def formula_efficiency_coefficient(formula_loss_factor, formula_coef_heat_transfer, plate_thickness,
+def formula_efficiency_coefficient(formula_loss_factor_gl, formula_coef_heat_transfer_plate, plate_thickness,
                                    thermal_cond_plate):
-    return (1 / formula_loss_factor) / (
-            (1 / formula_coef_heat_transfer) + (plate_thickness / thermal_cond_plate) + (1 / formula_loss_factor))
+    return (1 / formula_loss_factor_gl) / (
+            (1 / formula_coef_heat_transfer_plate) + (plate_thickness / thermal_cond_plate) + (1 / formula_loss_factor_gl))
 
 
 # действительный КПД гелиоколлектора

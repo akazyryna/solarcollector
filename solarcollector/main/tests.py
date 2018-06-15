@@ -156,7 +156,103 @@ class FormulasTests(TestCase):
         self.assertEqual(round(result, 7), 0.0000162)
 
     def test_formula_grashof(self):
-        result = formulas.formula_grashof(47.17, 19.57, 9.81, 0.012, 0.0000162)
+        result = formulas.formula_grashof(45.17, 19.57, 9.81, 0.012, 0.0000162)
 
         self.assertEqual(round(result, 2), 5414.97)
+
+    def test_formula_convect_transfer(self):
+        result = formulas.formula_convect_transfer(0.0269, 0.012, 47, 5414.94)
+
+        self.assertEqual(round(result, 3), 2.005)
+
+    def test_formula_radiation_coef(self):
+        result = formulas.formula_radiation_coef(5.67 * 10 ** -4, 45.17, 19.57, 0.9, 0.4)
+
+        self.assertEqual(round(result, 6), 0.000248)
+
+    def test_formula_free_convection(self):
+        result = formulas.formula_free_convection(47, 19.57, 5.3)
+
+        self.assertEqual(round(result, 2), 4.68)
+
+    def test_formula_radiation_transfer(self):
+        result = formulas.formula_radiation_transfer(5.647 * 10 ** -4, 0.4, 19.57, 5.3)
+
+        self.assertEqual(round(result, 5), 0.00021)
+
+    def test_formula_loss_factor(self):
+        result = formulas.formula_loss_factor(2.005, 0.000248, 0.004, 50, 4.68, 0.00021)
+
+        self.assertEqual(round(result, 3), 1.404)
+
+    def test_formula_temp_glass(self):
+        result = formulas.formula_temp_glass(5.3, 45.17, 1.404, 4.68, 0.00021)
+
+        self.assertEqual(round(result, 2), 17.26)
+
+    def test_formula_thermal_cond_gl(self):
+        result = formulas.formula_thermal_cond_gl(45.17, 17.26)
+
+        self.assertEqual(round(result, 4), 0.0268)
+
+    def test_formula_kinematic_viscosity_env_gl(self):
+        result = formulas.formula_kinematic_viscosity_env_gl(45.17, 17.26)
+
+        self.assertEqual(round(result, 7), 0.0000161)
+
+    def test_formula_grashof_gl(self):
+        result = formulas.formula_grashof_gl(45.17, 17.26, 9.81, 0.012, 0.0000161)
+
+        self.assertEqual(round(result, 2), 5999.85)
+
+    def test_formula_convect_transfer_gl(self):
+        result = formulas.formula_convect_transfer_gl(0.0268, 0.012, 47, 5999.85)
+
+        self.assertEqual(round(result, 3), 2.067)
+
+    def test_formula_radiation_coef_gl(self):
+        result = formulas.formula_radiation_coef_gl(5.67 * 10 ** -4, 45.17, 17.26, 0.9, 0.4)
+
+        self.assertEqual(round(result, 6), 0.000245)
+
+    def test_formula_free_convection_gl(self):
+        result = formulas.formula_free_convection_gl(47, 17.26, 5.3)
+
+        self.assertEqual(round(result, 2), 4.41)
+
+    def test_formula_radiation_transfer_gl(self):
+        result = formulas.formula_radiation_transfer_gl(5.67 * 10 ** -4, 0.4, 17.26, 5.3)
+
+        self.assertEqual(round(result, 5), 0.00021)
+
+    def test_formula_loss_factor_gl(self):
+        result = formulas.formula_loss_factor_gl(2.067, 0.000245, 0.004, 50, 4.41, 0.00021)
+
+        self.assertEqual(round(result, 3), 1.407)
+
+    def test_formula_temp_gl(self):
+        result = formulas.formula_temp_gl(5.3, 45.17, 1.407, 4.41, 0.00021)
+
+        self.assertEqual(round(result, 2), 18.02)
+
+    def test_formula_efficiency_coefficient(self):
+        result = formulas.formula_efficiency_coefficient(1.407, 9.846, 0.005, 220)
+
+        self.assertEqual(round(result, 3), 0.875)
+
+    def test_formula_kpd(self):
+        result = formulas.formula_kpd(0.75, 1.407, 55, 7, 5.3, 361.66, 0.875)
+
+        self.assertEqual(round(result, 3), 0.569)
+
+    def test_formula_en(self):
+        result = formulas.formula_en(537.45, 30)
+
+        self.assertEqual(round(result, 3), 17.915)
+
+    def test_formula_qk(self):
+        result = formulas.formula_qk(0.569, 1, 17.915)
+
+        self.assertEqual(round(result, 3), 10.194)
+
 
