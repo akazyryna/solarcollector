@@ -18,16 +18,18 @@ def formula_min(formula_for_horizontal, formula_for_inclination):
 # коэффициент пересчета прямого излучения с горизонтальной на наклонную поверхность
 def formula_conversion_factor(lat, incn_angle, formula_min, horz_angle, formula_for_horizontal):
     return ((m.cos(m.radians(lat - incn_angle)) * m.cos(m.radians(horz_angle)) * m.sin(m.radians(formula_min))) + (
-            (m.pi / 180) * m.radians(formula_min) * m.sin(m.radians(lat - incn_angle)) * m.sin(
-        m.radians(horz_angle)))) / ((m.cos(m.radians(lat)) * m.cos(m.radians(horz_angle)) * m.sin(
-        m.radians(formula_for_horizontal))) + (m.sin(m.radians(lat)) * m.sin(m.radians(horz_angle)) * (
-            m.pi / 180) * m.radians(formula_for_horizontal)))
+                m.radians(formula_min) * m.sin(m.radians(lat - incn_angle)) * m.sin(m.radians(horz_angle)))) / (
+                       m.cos(m.radians(lat)) * m.cos(m.radians(horz_angle)) * m.sin(
+                   m.radians(formula_for_horizontal)) + (
+                                   m.sin(m.radians(lat)) * m.sin(m.radians(horz_angle)) * m.radians(
+                               formula_for_horizontal)))
+
+    # коэффициент пересчета солнечной радиации для наклонной поверхности с южной ориентацией
 
 
-# коэффициент пересчета солнечной радиации для наклонной поверхности с южной ориентацией
 def formula_convers(incn_angle, ed, e, formula_conversion_factor, ro):
     return ((1 - (ed / e)) * formula_conversion_factor) + (((1 + m.cos(m.radians(incn_angle))) / 2) * (ed / e)) + (
-            ro * ((1 - m.cos(m.radians(incn_angle)) / 2)))
+            ro * ((1 - m.cos(m.radians(incn_angle))) / 2))
 
 
 # среднемесячное дневное количество солнечной энергии
@@ -121,24 +123,23 @@ def formula_heat_trans(plate_thickness, thermal_cond_plate, formula_coef_heat_tr
 
 
 # температура поглощающей панели
-def formula_temp_plate(hot_temp, cold_temp, formula_net_power_sc, formula_heat_trans):
-    return ((hot_temp + cold_temp) / 2) + (formula_net_power_sc / formula_heat_trans)
+def formula_temp_plate(hot_temp, cold_temp, formula_net_power_sc, formula_heat_trans, square):
+    return ((hot_temp + cold_temp) / 2) + (formula_net_power_sc / (formula_heat_trans * square))
 
 
 # плотность для пластины
 def formula_density_plate(formula_temp_plate):
-    return 1005 / (0.99534 + 0.466 * 10 ** -3 * (formula_temp_plate) / 2)
+    return 1005 / (0.99534 + 0.466 * 10 ** -3 * formula_temp_plate)
 
 
 # коэффициент теплопроводности пластины
 def formula_thermal_cond_plate(formula_temp_plate):
-    return 0.5514 + (0.2588 * 10 ** -2) * ((formula_temp_plate) / 2) - (0.1278 * 10 ** -4) * (
-            (formula_temp_plate) / 2) ** 2
+    return 0.5514 + (0.2588 * 10 ** -2) * formula_temp_plate - (0.1278 * 10 ** -4) * (formula_temp_plate) ** 2
 
 
 # коэффициент кинематической вязкости пластины
 def formula_kinematic_viscosity_plate(formula_temp_plate):
-    return m.exp(m.exp(33.23 - 5.93043 * m.log(((formula_temp_plate) / 2) + 273)) - 0.87) * 10 ** -6
+    return m.exp(m.exp(33.23 - 5.93043 * m.log(formula_temp_plate + 273)) - 0.87) * 10 ** -6
 
 
 # число Прандтля для пластины
@@ -167,14 +168,14 @@ def formula_kinematic_viscosity_env(formula_temp_plate, temp_glass):
 
 
 # число Грасгофа
-def formula_grashof(formula_temp_plate, temp_glass, g, channel_height, formula_kinematic_viscosity_env):
+def formula_grashof(formula_temp_plate, temp_glass, g, distance, formula_kinematic_viscosity_env):
     return 1 / (273 + ((formula_temp_plate + temp_glass) / 2)) * g * (formula_temp_plate - temp_glass) * (
-            (channel_height) ** 3) / ((formula_kinematic_viscosity_env) ** 2)
+            (distance) ** 3) / ((formula_kinematic_viscosity_env) ** 2)
 
 
 # коэффициент конвективного теплообмена
-def formula_convect_transfer(formula_thermal_cond_env, channel_height, incn_angle, formula_grashof):
-    return (formula_thermal_cond_env / channel_height) * (0.060 - 0.00019 * incn_angle) * (formula_grashof) ** 0.333
+def formula_convect_transfer(formula_thermal_cond_env, distance, incn_angle, formula_grashof):
+    return (formula_thermal_cond_env / distance) * (0.060 - 0.00019 * incn_angle) * (formula_grashof) ** 0.333
 
 
 # радиационный коэффициент
@@ -219,15 +220,15 @@ def formula_kinematic_viscosity_env_gl(formula_temp_plate, formula_temp_glass):
 
 
 # число Грасгофа
-def formula_grashof_gl(formula_temp_plate, formula_temp_glass, g, channel_height, formula_kinematic_viscosity_env_gl):
+def formula_grashof_gl(formula_temp_plate, formula_temp_glass, g, distance, formula_kinematic_viscosity_env_gl):
     return 1 / (273 + ((formula_temp_plate + formula_temp_glass) / 2)) * g * (
             formula_temp_plate - formula_temp_glass) * (
-                   (channel_height) ** 3) / ((formula_kinematic_viscosity_env_gl) ** 2)
+                   (distance) ** 3) / ((formula_kinematic_viscosity_env_gl) ** 2)
 
 
 # коэффициент конвективного теплообмена
-def formula_convect_transfer_gl(formula_thermal_cond_gl, channel_height, incn_angle, formula_grashof_gl):
-    return (formula_thermal_cond_gl / channel_height) * (0.060 - 0.00019 * incn_angle) * (
+def formula_convect_transfer_gl(formula_thermal_cond_gl, distance, incn_angle, formula_grashof_gl):
+    return (formula_thermal_cond_gl / distance) * (0.060 - 0.00019 * incn_angle) * (
         formula_grashof_gl) ** 0.333
 
 
@@ -267,7 +268,8 @@ def formula_temp_gl(temp_air, formula_temp_plate, formula_loss_factor_gl, formul
 def formula_efficiency_coefficient(formula_loss_factor_gl, formula_coef_heat_transfer_plate, plate_thickness,
                                    thermal_cond_plate):
     return (1 / formula_loss_factor_gl) / (
-            (1 / formula_coef_heat_transfer_plate) + (plate_thickness / thermal_cond_plate) + (1 / formula_loss_factor_gl))
+            (1 / formula_coef_heat_transfer_plate) + (plate_thickness / thermal_cond_plate) + (
+            1 / formula_loss_factor_gl))
 
 
 # действительный КПД гелиоколлектора

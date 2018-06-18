@@ -23,7 +23,8 @@ CONST = (
     (50, 'cond_surface'),
     (0.9, 'blackness_plate'),
     (0.4, 'blackness_glass'),
-    (5.67 * 10 ** -4, 'boltzman'),
+    (5.67, 'boltzman'),
     (9.81, 'g'),
     (4186, 'heat_cap'),
+    (0.018, 'distance'),
 )
