@@ -16,7 +16,7 @@ MES_TYPES = (
     (MES_TYPE_JL, 'Joules'),
     (MES_TYPE_WT, 'WATT'),
 )
-
+'''
 CONST = (
     (55, 'hot_temp'),
     (220, 'thermal_cond_plate'),
@@ -28,3 +28,4 @@ CONST = (
     (4186, 'heat_cap'),
     (0.018, 'distance'),
 )
+'''

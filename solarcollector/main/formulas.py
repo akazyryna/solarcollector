@@ -18,11 +18,11 @@ def formula_min(formula_for_horizontal, formula_for_inclination):
 # коэффициент пересчета прямого излучения с горизонтальной на наклонную поверхность
 def formula_conversion_factor(lat, incn_angle, formula_min, horz_angle, formula_for_horizontal):
     return ((m.cos(m.radians(lat - incn_angle)) * m.cos(m.radians(horz_angle)) * m.sin(m.radians(formula_min))) + (
-                m.radians(formula_min) * m.sin(m.radians(lat - incn_angle)) * m.sin(m.radians(horz_angle)))) / (
-                       m.cos(m.radians(lat)) * m.cos(m.radians(horz_angle)) * m.sin(
-                   m.radians(formula_for_horizontal)) + (
-                                   m.sin(m.radians(lat)) * m.sin(m.radians(horz_angle)) * m.radians(
-                               formula_for_horizontal)))
+            m.radians(formula_min) * m.sin(m.radians(lat - incn_angle)) * m.sin(m.radians(horz_angle)))) / (
+                   m.cos(m.radians(lat)) * m.cos(m.radians(horz_angle)) * m.sin(
+               m.radians(formula_for_horizontal)) + (
+                           m.sin(m.radians(lat)) * m.sin(m.radians(horz_angle)) * m.radians(
+                       formula_for_horizontal)))
 
     # коэффициент пересчета солнечной радиации для наклонной поверхности с южной ориентацией
 
@@ -37,6 +37,7 @@ def formula_amount_energy(formula_convers, e):
     return formula_convers * e
 
 
+'''
 # средняя суточная тепловая нагрузка
 def formula_monthly_heat_load(heat_cap, daily_dis, hot_temp, cold_temp):
     return (heat_cap * daily_dis * (hot_temp - cold_temp)) / 10 ** 5
@@ -287,3 +288,4 @@ def formula_en(formula_amount_energy, nd):
 # Qk
 def formula_qk(formula_kpd, square, formula_en):
     return formula_kpd * square * formula_en
+'''
